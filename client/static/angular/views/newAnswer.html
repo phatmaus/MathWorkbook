@@ -1,0 +1,20 @@
+<div ng-controller='NewAnswerController'>
+    <h1>New Answer</h1>
+    <form novalidate name="newAnswerForm" class="newForm" ng-submit="addAnswer(newAnswerForm.$valid)">
+        <label class="equalWidth">Answer:</label>
+        <textarea name="answer" ng-model="newAnswer.answer" class="form-control" required ng-minlength="5"></textarea>
+        <div class="error" ng-show="newAnswerForm.answer.$error.minlength">minimum 5 characters required</div>
+        <div class="error" ng-show="newAnswerForm.answer.$error.required">minimum 5 characters required</div>
+        <br/>
+
+        <label class="equalWidth">Supporting details(optional):</label>
+        <textarea name="details" ng-model="newAnswer.details" class="form-control"></textarea>
+        <br/>
+
+        <div class="rightJustified">
+            <button ng-click="cancel()">Cancel</button>
+            <input type="submit" value="Submit" ng-disabled="newAnswerForm.$invalid" />
+        </div>
+        <span class="success">{{answerAdded}}</span>
+    </form>
+</div>

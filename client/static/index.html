@@ -1,0 +1,49 @@
+<html ng-app='myApp'>
+
+<head>
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/vendor/tooltipster.css">
+
+    <script src='bower_components/angular/angular.js' /></script>
+    <script src='bower_components/angular-route/angular-route.js' /></script>
+    <script src='bower_components/firebase/firebase.js' /></script>
+    <script src='bower_components/angularfire/dist/angularfire.js' /></script>
+    <script src='bower_components/angular-cache-buster/angular-cache-buster.js' /></script>
+    <script src='bower_components/paper/dist/paper-full.js' /></script>
+    <script src='bower_components/underscore/underscore.js' /></script>
+
+    <script src='angular/constants/PAGE.js' /></script>
+    <script src='angular/constants/APP.js' /></script>
+    <script src='angular/routes/routes.js' /></script>
+
+
+    <script src='angular/services/AuthService.js' /></script>
+    <script src='angular/services/SessionService.js' /></script>
+    <script src='angular/services/QuestionService.js' /></script>
+    <script src='angular/services/AnswerService.js' /></script>
+
+    <script src='angular/controllers/ApplicationController.js' /></script>
+    <script src='angular/controllers/LoginController.js' /></script>
+    <script src='angular/controllers/NewQuestionController.js' /></script>
+    <script src='angular/controllers/HomeController.js' /></script>
+    <script src='angular/controllers/ViewQuestionController.js' /></script>
+    <script src='angular/controllers/NewAnswerController.js' /></script>
+
+
+    <script src='angular/filters/RangeFilter.js' /></script>
+    <script src='angular/filters/FieldGreaterThanFilter.js' /></script>
+    <script src='angular/directives/WhiteBoardDirective.js' /></script>
+
+    <script src='angular/modules/underscore.js' /></script>
+    <script src='angular/modules/main.js' /></script>
+</head>
+
+<body ng-controller="ApplicationController">
+    <div ng-view=""></div>
+</body>
+
+</html>

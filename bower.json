@@ -1,0 +1,30 @@
+{
+  "name": "FullMeanAssignment1",
+  "version": "1",
+  "authors": [
+    "the devil"
+  ],
+  "description": "blah",
+  "main": "server.js",
+  "keywords": [
+    "screw",
+    "this"
+  ],
+  "ignore": [
+    "**/.*",
+    "libs"
+  ],
+  "license": "xxx",
+  "homepage": "www.fuckthis.com",
+  "dependencies": {
+    "angular": "latest",
+    "angular-route": "latest",
+    "angular-cache-buster": "~0.4.3",
+    "requirejs": "~2.1.19",
+    "requirejs-domready": "latest",
+    "angularfire": "~1.1.2",
+    "firebase": "~2.2.7",
+    "paper": "~0.9.23",
+    "underscore": "~1.8.3"
+  }
+}

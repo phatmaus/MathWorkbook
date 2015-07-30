@@ -1,0 +1,14 @@
+<div ng-controller="ViewQuestionController">
+    <h1 ng-bind="question.question"></h1>
+    <h2 ng-bind="question.description"></h2>
+
+    <div class="answer" ng-repeat="answer in question.answers|orderBy:['-likes','createdTimeStamp']">
+        <div ng-bind="answer.userName"></div>
+        <div><b ng-bind="answer.answer"></b></div>
+        <div ng-bind="answer.details"></div>
+        <div class="rightJustified">
+            <span ng-bind="answer.likes">likes</span>
+            <button ng-click="like(answer)">Like!</button>
+        </div>
+    </div>
+</div>
