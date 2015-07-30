@@ -6,6 +6,19 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
 
             var dbToBaseLayerMapping = {};
 
+            var getPathIntersections = function (pathToCheck) {
+                var intersectedIds = [];
+                for (var index of $scope.pathsArray) {
+                    var arrayIndex = dbToBaseLayerMapping[index.$id];
+                    var pathToCheckAgainst = paper.project.layers[1]._children[arrayIndex];
+                    var intersections = pathToCheck.getIntersections(pathToCheckAgainst);
+                    if (intersections.length > 0) {
+                        intersectedIds.push(index.$id);
+                    }
+                }
+                return intersectedIds;
+            }
+
             var generateDbPathForLine = function (segments, alert) {
                 var dbPath = {
                     color: $scope.activeColor,
@@ -41,6 +54,8 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
 
             var baseLayer = new paper.Layer();
 
+            var alertLayer = new paper.Layer();
+
             var tempLayer = new paper.Layer();
             tempLayer.activate();
 
@@ -50,7 +65,7 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                     var color = $scope.pathsArray[pos].color;
                     var width = $scope.pathsArray[pos].width;
                     var type = $scope.pathsArray[pos].type;
-                    if (type == "line" || "alert") {
+                    if (type == "line" || type == "alert") {
                         var dashArray = (type == "line") ? [] : [4, 4];
                         var segments = $scope.pathsArray[pos].segments;
                         var newPath = new paper.Path(segments);
@@ -58,6 +73,7 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                         newPath.strokeColor = color;
                         newPath.simplify(0.5);
                         newPath.strokeCap = "round";
+                        newPath.strokeJoin = "round";
                         newPath.dashArray = dashArray;
                         var newlyAddedPath = baseLayer.addChild(newPath);
                         dbToBaseLayerMapping[data.key] = newlyAddedPath._index;
@@ -76,27 +92,24 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                         newPath.strokeColor = color;
                         newPath.fillColor = color;
                         var newlyAddedPath = baseLayer.addChild(newPath);
-                        firebaseToPaperArrayMapping[data.key] = newlyAddedPath._index;
+                        dbToBaseLayerMapping[data.key] = newlyAddedPath._index;
                         paper.view.update(true);
                     }
                 } else if (data.event == "child_removed") {
-                    var indexToremove = dbToBaseLayerMapping[data.key];
-                    paper.project.layers[1].removeChildren(indexToremove, indexToremove + 1);
+                    var indexToRemove = dbToBaseLayerMapping[data.key];
+                    paper.project.layers[1].removeChildren(indexToRemove, indexToRemove + 1);
                     for (var key in dbToBaseLayerMapping) {
-                        if (dbToBaseLayerMapping[key] > indexToremove) { //this keeps the references synced
+                        if (dbToBaseLayerMapping[key] > indexToRemove) { //this keeps the references synced
                             dbToBaseLayerMapping[key] = dbToBaseLayerMapping[key] - 1;
                         }
                     }
+                    delete dbToBaseLayerMapping[data.key];
                     paper.view.update(true);
                 }
             })
 
             var tempPath;
             var tool = new paper.Tool();
-            //tool.maxDistance = 1;
-
-            //Variables to handle the textTool
-            var start, end, tempPath;
 
             var touchDown = {
                 x: -1,
@@ -120,7 +133,8 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
             }
 
             tool.onMouseUp = function (event) {
-                if (touchDown.x == event.point.x && touchDown.y == event.point.y) {
+                if (!$scope.eraserTool && touchDown.x == event.point.x && touchDown.y == event.point.y) {
+                    //if this is a dot
                     tempPath = new paper.Path.Circle(event.point, $scope.activePenSize / 2);
                     tempPath.strokeColor = $scope.activeColor;
                     tempPath.fillColor = $scope.activeColor;
@@ -129,11 +143,21 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                     paper.view.update(true);
                     $scope.pathsArray.$add(dbPoint);
                 } else {
-                    tempPath.simplify(0.5);
-                    var dbPath = generateDbPathForLine(tempPath._segments, !!$scope.alertTool);
-                    tempPath.remove();
-                    paper.view.update(true);
-                    $scope.pathsArray.$add(dbPath).then(function pathAdded() {})
+                    if (!$scope.eraserTool) {
+                        tempPath.simplify(0.5);
+                        var dbPath = generateDbPathForLine(tempPath._segments, $scope.alertTool);
+                        tempPath.remove();
+                        paper.view.update(true);
+                        $scope.pathsArray.$add(dbPath).then(function pathAdded() {})
+                    } else {
+                        var intersectedIds = getPathIntersections(tempPath);
+                        tempPath.remove();
+                        paper.view.update(true);
+                        for (var i in intersectedIds) {
+                            var dbId = intersectedIds[i];
+                            $scope.pathsArray.$remove($scope.pathsArray.$indexFor(dbId));
+                        }
+                    }
                 }
 
             }

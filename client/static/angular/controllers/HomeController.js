@@ -28,13 +28,12 @@ var HomeController = function ($scope, QuestionService, $location, $firebaseObje
     $scope.activePenSize = penSizes['finePen'];
     $scope.dashArray = []; //used for making dotted line, [] = solid
 
-    var oldActiveColor = $scope.activeColor;
-    var oldActivePenSize = $scope.activePenSize;
+    /*var oldActiveColor = $scope.activeColor;
+    var oldActivePenSize = $scope.activePenSize;*/
 
     $scope.changeTool = function (tool) {
         $scope.pencilTool = false;
         $scope.eraserTool = false;
-        $scope.textTool = false;
         $scope.alertTool = false;
 
         $scope[tool] = true;
@@ -46,7 +45,7 @@ var HomeController = function ($scope, QuestionService, $location, $firebaseObje
             oldActiveColor = $scope.activeColor;
             oldActivePenSize = $scope.activePenSize;
             $scope.activeColor = '#ffffff';
-            $scope.activePenSize = 20;
+            $scope.activePenSize = 4;
         }
 
         if ($scope.alertTool) {
