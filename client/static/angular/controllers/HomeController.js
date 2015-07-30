@@ -1,13 +1,10 @@
 var HomeController = function ($scope, QuestionService, $location, $firebaseObject, $firebaseArray, _) {
     var refArr = new Firebase(APP.FB_URL + "XXX_arr");
     $scope.pathsArray = $firebaseArray(refArr);
-    $scope.pathsArray.$loaded().then(function pathsArrayLoaded() {})
 
     $scope.pencilTool = true;
     $scope.colorOne = true;
-    $scope.thinPen = true;
-
-    $scope.board_id = 0;
+    $scope.finePen = true;
 
     var colorObject = {
         colorOne: '#414141',
@@ -28,32 +25,34 @@ var HomeController = function ($scope, QuestionService, $location, $firebaseObje
     };
 
     $scope.activeColor = colorObject.colorOne;
-    $scope.activePenSize = penSizes['thinPen'];
+    $scope.activePenSize = penSizes['finePen'];
+    $scope.dashArray = []; //used for making dotted line, [] = solid
 
-    var _activeColor, _activePenSize;
+    var oldActiveColor = $scope.activeColor;
+    var oldActivePenSize = $scope.activePenSize;
 
     $scope.changeTool = function (tool) {
         $scope.pencilTool = false;
         $scope.eraserTool = false;
         $scope.textTool = false;
+        $scope.alertTool = false;
 
         $scope[tool] = true;
 
-        if ($scope.pencilTool) {
-            $scope.activeColor = _activeColor;
-            $scope.activePenSize = _activePenSize;
-        }
-
-        if ($scope.eraserTool) {
-            _activeColor = $scope.activeColor;
-            _activePenSize = $scope.activePenSize;
+        if ($scope.pencilTool || $scope.alertTool) {
+            $scope.activeColor = oldActiveColor;
+            $scope.activePenSize = oldActivePenSize;
+        } else if ($scope.eraserTool) {
+            oldActiveColor = $scope.activeColor;
+            oldActivePenSize = $scope.activePenSize;
             $scope.activeColor = '#ffffff';
             $scope.activePenSize = 20;
         }
 
-        if ($scope.textTool) {
-            _activeColor = $scope.activeColor;
-            _activePenSize = $scope.activePenSize;
+        if ($scope.alertTool) {
+            $scope.dashArray = [4, 4];
+        } else {
+            $scope.dashArray = [];
         }
     };
 
@@ -103,10 +102,5 @@ var HomeController = function ($scope, QuestionService, $location, $firebaseObje
             delete localStorage.board_id;
             $location.path("/connect");
         }
-
-        $scope.createShareLink = function () {
-            window.prompt("Copy the link below. Anyone with this link will be able to see and draw on this whiteboard", window.location.origin + "/#/whiteboard/" + $scope.board_id);
-        }
-
     }
 }
