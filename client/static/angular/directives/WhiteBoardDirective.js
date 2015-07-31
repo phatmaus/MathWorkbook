@@ -3,6 +3,8 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
         link: function ($scope, element, atributes) {
             element[0].width = (window.innerWidth);
             element[0].height = 11 / 8.5 * element[0].width;
+            var canvasWidth = element[0].width;
+            var canvasHeight = element[0].height;
 
             var dbToBaseLayerMapping = {};
 
@@ -161,6 +163,22 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                 }
 
             }
+
+            var imageObjectWatch = $scope.backGroundImage.$watch(function (data) {
+                if (!!$scope.backGroundImage.image && $scope.backGroundImage.image.length > 0) {
+                    $scope.hiddenBackground.src = $scope.backGroundImage.image;
+                    var backGroundRaster = new paper.Raster($scope.hiddenBackground);
+                    var rasterWidth = backGroundRaster.height;
+                    var rasterHeight = backGroundRaster.width;
+                    backGroundRaster.position = paper.view.center;
+                    backGroundRaster.rotate(90);
+                    backGroundRaster.scale(canvasWidth / rasterWidth, canvasHeight / rasterHeight)
+                    backgroundLayer.addChild(backGroundRaster);
+                } else {
+                    backgroundLayer.removeChildren();
+                }
+                paper.view.update(true);
+            })
         }
     };
 }

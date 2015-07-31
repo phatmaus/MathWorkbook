@@ -1,82 +1,62 @@
 var UploadController = function ($scope, $location, $firebaseObject) {
-    var url = 'http://uk.mathworks.com/moler/random.pdf';
+    var refArr = new Firebase(APP.FB_URL + "XXX/backGroundImage");
+    var backGroundImage = $firebaseObject(refArr);
+    var runOnce = false;
+    var videoStream = null;
+    var video = document.querySelector("#video");
+    var canvas = document.querySelector("#canvas");
+    var context = canvas.getContext("2d");
 
+    var createSrc = window.URL ? window.URL.createObjectURL : function (stream) {
+        return stream;
+    };
 
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
-    var pdfDoc = null,
-        pageNum = 1,
-        pageRendering = false,
-        pageNumPending = null,
-        scale = 0.8,
-        canvas = document.querySelector('#pdfCanvas'),
-        ctx = canvas.getContext('2d');
+    navigator.getUserMedia({
+            video: true
+        },
+        function (stream) {
+            videoStream = stream;
+            video.src = createSrc(stream);
+            video.play();
+        },
+        function (err) {
+            console.log(err);
+        })
 
-    /**
-     * Get page info from document, resize canvas accordingly, and render page.
-     * @param num Page number.
-     */
-    function renderPage(num) {
-        pageRendering = true;
-        // Using promise to fetch the page
-        pdfDoc.getPage(num).then(function (page) {
-            var viewport = page.getViewport(scale);
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+    $scope.goBack = function () {
+        if (!!videoStream) {
+            videoStream.stop();
+        }
+        $location.path("/");
+    }
 
-            // Render PDF page into canvas context
-            var renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-            var renderTask = page.render(renderContext);
+    $scope.eraseImage = function () {
+        backGroundImage.image = "";
+        backGroundImage.$remove().then(function (ref) {
+            if (!!videoStream) {
+                videoStream.stop();
+            }
+            $location.path("/");
+        })
+    }
 
-            // Wait for rendering to finish
-            renderTask.promise.then(function () {
-                pageRendering = false;
-                if (pageNumPending !== null) {
-                    // New page rendering is pending
-                    renderPage(pageNumPending);
-                    pageNumPending = null;
+    $scope.captureImage = function () {
+        if (videoStream && !runOnce) {
+            runOnce = true;
+            var videoWidth = video.offsetWidth;
+            var videoHeight = video.offsetHeight;
+            canvas.width = videoWidth;
+            canvas.height = videoHeight;
+            context.drawImage(video, 0, 0, videoWidth, videoHeight);
+            backGroundImage.image = canvas.toDataURL("image/jpeg");
+            backGroundImage.$save().then(function (ref) {
+                if (!!videoStream) {
+                    videoStream.stop();
                 }
-            });
-        });
-    }
-
-    /**
-     * If another page rendering in progress, waits until the rendering is
-     * finised. Otherwise, executes rendering immediately.
-     */
-    function queueRenderPage(num) {
-        if (pageRendering) {
-            pageNumPending = num;
-        } else {
-            renderPage(num);
+                $location.path("/");
+            })
         }
     }
-
-    /**
-     * Displays previous page.
-     */
-    function onPrevPage() {
-        if (pageNum <= 1) {
-            return;
-        }
-        pageNum--;
-        queueRenderPage(pageNum);
-    }
-
-    function onNextPage() {
-        if (pageNum >= pdfDoc.numPages) {
-            return;
-        }
-        pageNum++;
-        queueRenderPage(pageNum);
-    }
-
-    PDFJS.getDocument(url).then(function (pdfDoc_) {
-        pdfDoc = pdfDoc_;
-
-        // Initial/first page rendering
-        renderPage(pageNum);
-    });
 }

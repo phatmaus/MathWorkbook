@@ -1,10 +1,12 @@
 <div ng-controller="UploadController">
     <div class="toolbar">
         <ul style="list-style: none; display: inline">
-            <li ng-click="clearPage()" class="icon"><i class="fa fa-arrow-left"></i></li>
-            <li ng-click="uploadBackground()" class="icon"><i class="fa fa-file"></i></li>
+            <li ng-click="goBack()" class="icon"><i class="fa fa-arrow-left"></i></li>
+            <li ng-click="captureImage()" class="icon"><i class="fa fa-camera"></i></li>
+            <li ng-click="eraseImage()" class="icon"><i class="fa fa-eraser"></i></li>
         </ul>
     </div>
-    <input type="file" id="pdfToUpload">
-    <canvas whiteboard class="board" id="myCanvas" keepalive="true"></canvas>
+    <video id="video" autoplay="autoplay"></video>
+    <br/>
+    <canvas id="canvas"></canvas>
 </div>

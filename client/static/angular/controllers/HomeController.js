@@ -1,6 +1,9 @@
 var HomeController = function ($scope, QuestionService, $location, $firebaseObject, $firebaseArray, _) {
-    var refArr = new Firebase(APP.FB_URL + "XXX_arr");
+    var refArr = new Firebase(APP.FB_URL + "XXX/pathsArray");
     $scope.pathsArray = $firebaseArray(refArr);
+    var refArr = new Firebase(APP.FB_URL + "XXX/backGroundImage");
+    $scope.backGroundImage = $firebaseObject(refArr);
+    $scope.hiddenBackground = document.querySelector("#hiddenBackground");
 
     $scope.pencilTool = true;
     $scope.colorOne = true;
