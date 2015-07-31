@@ -1,16 +1,82 @@
 var UploadController = function ($scope, $location, $firebaseObject) {
-    $scope.credentials = {
-        userName: ''
-    };
-    $scope.addNameError = "";
+    var url = 'http://uk.mathworks.com/moler/random.pdf';
 
-    $scope.login = function (credentials) {
-        AuthService.login(credentials).then(function (user) {
-            $scope.credentials.userName = "";
-            $scope.addNameError = "";
-            $location.path("/");
-        }, function () {
-            $scope.addNameError = "couldn't log in";
+
+
+    var pdfDoc = null,
+        pageNum = 1,
+        pageRendering = false,
+        pageNumPending = null,
+        scale = 0.8,
+        canvas = document.querySelector('#pdfCanvas'),
+        ctx = canvas.getContext('2d');
+
+    /**
+     * Get page info from document, resize canvas accordingly, and render page.
+     * @param num Page number.
+     */
+    function renderPage(num) {
+        pageRendering = true;
+        // Using promise to fetch the page
+        pdfDoc.getPage(num).then(function (page) {
+            var viewport = page.getViewport(scale);
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            // Render PDF page into canvas context
+            var renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+            var renderTask = page.render(renderContext);
+
+            // Wait for rendering to finish
+            renderTask.promise.then(function () {
+                pageRendering = false;
+                if (pageNumPending !== null) {
+                    // New page rendering is pending
+                    renderPage(pageNumPending);
+                    pageNumPending = null;
+                }
+            });
         });
     }
+
+    /**
+     * If another page rendering in progress, waits until the rendering is
+     * finised. Otherwise, executes rendering immediately.
+     */
+    function queueRenderPage(num) {
+        if (pageRendering) {
+            pageNumPending = num;
+        } else {
+            renderPage(num);
+        }
+    }
+
+    /**
+     * Displays previous page.
+     */
+    function onPrevPage() {
+        if (pageNum <= 1) {
+            return;
+        }
+        pageNum--;
+        queueRenderPage(pageNum);
+    }
+
+    function onNextPage() {
+        if (pageNum >= pdfDoc.numPages) {
+            return;
+        }
+        pageNum++;
+        queueRenderPage(pageNum);
+    }
+
+    PDFJS.getDocument(url).then(function (pdfDoc_) {
+        pdfDoc = pdfDoc_;
+
+        // Initial/first page rendering
+        renderPage(pageNum);
+    });
 }
