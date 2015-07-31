@@ -12,7 +12,7 @@ myApp.service("AuthService", AuthService);
 myApp.service("AnswerService", AnswerService);
 
 myApp.controller('ApplicationController', ApplicationController);
-myApp.controller('LoginController', LoginController);
+myApp.controller('UploadController', UploadController);
 myApp.controller('NewQuestionController', NewQuestionController);
 myApp.controller('HomeController', HomeController);
 myApp.controller('ViewQuestionController', ViewQuestionController);

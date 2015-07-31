@@ -1,0 +1,10 @@
+<div ng-controller="UploadController">
+    <div class="toolbar">
+        <ul style="list-style: none; display: inline">
+            <li ng-click="clearPage()" class="icon"><i class="fa fa-arrow-left"></i></li>
+            <li ng-click="uploadBackground()" class="icon"><i class="fa fa-file"></i></li>
+        </ul>
+    </div>
+    <input type="file" id="pdfToUpload">
+    <canvas whiteboard class="board" id="myCanvas" keepalive="true"></canvas>
+</div>

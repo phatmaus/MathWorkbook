@@ -26,10 +26,13 @@ var HomeController = function ($scope, QuestionService, $location, $firebaseObje
 
     $scope.activeColor = colorObject.colorOne;
     $scope.activePenSize = penSizes['finePen'];
+    var oldActiveColor = $scope.activeColor;
+    var oldActivePenSize = $scope.activePenSize;
     $scope.dashArray = []; //used for making dotted line, [] = solid
 
-    /*var oldActiveColor = $scope.activeColor;
-    var oldActivePenSize = $scope.activePenSize;*/
+    $scope.uploadBackground = function () {
+        $location.path("/upload");
+    }
 
     $scope.changeTool = function (tool) {
         $scope.pencilTool = false;

@@ -2,10 +2,10 @@
     <div class="toolbar">
         <ul style="list-style: none; display: inline">
             <li ng-click="clearPage()" style="margin-left: 0;" class="icon"><i class="fa fa-file-o"></i></li>
-
             <li ng-class="{ active: pencilTool }" ng-click="changeTool('pencilTool')" class="icon pencil-icon"><i class="fa fa-pencil"></i></li>
             <li ng-class="{ active: eraserTool }" ng-click="changeTool('eraserTool')" class="icon eraser-icon"><i class="fa fa-eraser"></i></li>
             <li ng-class="{ active: alertTool }" ng-click="changeTool('alertTool')" class="icon alert-icon"><i class="fa fa-exclamation"></i></li>
+            <li ng-click="uploadBackground()" class="icon"><i class="fa fa-file"></i></li>
         </ul>
         <ul class="color-pallet">
             <li ng-class="{ active: colorOne}" ng-click="changeColor('colorOne')" class="one"></li>
@@ -25,5 +25,6 @@
             <li ng-class="{active: thickPen}" ng-click="changePenSize('thickPen')" class="four"></li>
         </ul>
     </div>
-    <canvas whiteboard class="board" id="myCanvas" keepalive="true">
+    <canvas whiteboard class="board" id="myCanvas" keepalive="true"></canvas>
+    <img id="hiddenBackground" style="display:hidden">
 </div>

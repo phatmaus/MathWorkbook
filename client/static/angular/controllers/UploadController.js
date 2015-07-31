@@ -1,4 +1,4 @@
-var LoginController = function ($scope, AuthService, $location) {
+var UploadController = function ($scope, $location, $firebaseObject) {
     $scope.credentials = {
         userName: ''
     };
