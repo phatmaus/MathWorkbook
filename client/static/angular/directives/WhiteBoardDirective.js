@@ -1,6 +1,11 @@
 var WhiteBoardDirective = function ($firebaseObject, $timeout) {
     return {
         link: function ($scope, element, atributes) {
+            var browserCanvasWidth = window.innerWidth;
+            var browserCanvasHeight = 11 / 8.5 * browserCanvasWidth;
+            var heightRatio = APP.DB_SCREEN_DIMENSIONS.height/browserCanvasHeight;
+            var widthRatio = APP.DB_SCREEN_DIMENSIONS.width/browserCanvasWidth;
+
             element[0].width = (window.innerWidth);
             element[0].height = 11 / 8.5 * element[0].width;
             var canvasWidth = element[0].width;
@@ -30,8 +35,8 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                 }
                 for (var i in segments) {
                     dbPath.segments.push({
-                        x: segments[i]._point._x,
-                        y: segments[i]._point._y
+                        x: segments[i]._point._x*widthRatio,
+                        y: segments[i]._point._y*heightRatio
                     })
                 }
                 return dbPath;
@@ -43,8 +48,8 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                     width: ($scope.activePenSize / 2),
                     type: "point",
                     point: {
-                        x: point.x,
-                        y: point.y
+                        x: point.x*widthRatio,
+                        y: point.y*heightRatio
                     }
                 }
                 return dbPoint;
@@ -70,6 +75,11 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                     if (type == "line" || type == "alert") {
                         var dashArray = (type == "line") ? [] : [4, 4];
                         var segments = $scope.pathsArray[pos].segments;
+                        for(var segment of segments)
+                        {
+                            segment.x *= 1/widthRatio;
+                            segment.y *= 1/heightRatio;
+                        }
                         var newPath = new paper.Path(segments);
                         newPath.strokeWidth = width;
                         newPath.strokeColor = color;
@@ -86,10 +96,12 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                                 var indexToremove = $scope.pathsArray.$indexFor(data.key);
                                 $scope.pathsArray.$remove(indexToremove);
                                 paper.view.update(true);
-                            }, 1111);
+                            }, APP.ALERT_LINE_TIMEOUT_IN_MILLIS);
                         }
                     } else if (type == "point") {
                         var point = $scope.pathsArray[pos].point;
+                        point.x *= 1/widthRatio;
+                        point.y *= 1/heightRatio;
                         newPath = new paper.Path.Circle(new paper.Point(point.x, point.y), width);
                         newPath.strokeColor = color;
                         newPath.fillColor = color;
