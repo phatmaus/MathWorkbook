@@ -7,16 +7,11 @@ myApp.constant(PAGE);
 myApp.constant(APP);
 
 myApp.service("SessionService", SessionService);
-myApp.service("QuestionService", QuestionService);
 myApp.service("AuthService", AuthService);
-myApp.service("AnswerService", AnswerService);
 
 myApp.controller('ApplicationController', ApplicationController);
 myApp.controller('UploadController', UploadController);
-myApp.controller('NewQuestionController', NewQuestionController);
 myApp.controller('HomeController', HomeController);
-myApp.controller('ViewQuestionController', ViewQuestionController);
-myApp.controller('NewAnswerController', NewAnswerController);
 
 myApp.filter('RangeFilter', RangeFilter);
 myApp.filter('FieldGreaterThanFilter', FieldGreaterThanFilter);

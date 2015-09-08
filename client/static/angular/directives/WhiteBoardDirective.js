@@ -61,7 +61,7 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
 
             var baseLayer = new paper.Layer();
 
-            var alertLayer = new paper.Layer();
+            //var alertLayer = new paper.Layer();
 
             var tempLayer = new paper.Layer();
             tempLayer.activate();
@@ -173,7 +173,6 @@ var WhiteBoardDirective = function ($firebaseObject, $timeout) {
                         }
                     }
                 }
-
             }
 
             var imageObjectWatch = $scope.backGroundImage.$watch(function (data) {

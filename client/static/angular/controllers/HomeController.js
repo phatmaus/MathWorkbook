@@ -1,4 +1,4 @@
-var HomeController = function ($scope, QuestionService, $location, $firebaseObject, $firebaseArray, _) {
+var HomeController = function ($scope, $location, $firebaseObject, $firebaseArray, _) {
     var refArr = new Firebase(APP.FB_URL + "XXX/pathsArray");
     $scope.pathsArray = $firebaseArray(refArr);
     var refArr = new Firebase(APP.FB_URL + "XXX/backGroundImage");
