@@ -3,7 +3,6 @@ var myApp = angular.module('myApp', ['ngRoute', "underScore", "ngCacheBuster", "
 });
 myApp.config(["$routeProvider", routes]);
 
-myApp.constant(PAGE);
 myApp.constant(APP);
 
 myApp.service("SessionService", SessionService);
