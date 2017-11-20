@@ -7,8 +7,8 @@ var ApplicationController = function ($scope, AuthService, $location) {
     };
 
     $scope.logout = function () {
-        AuthService.logout().then(function () {
+        AuthService.logout().then(function() {
             $location.path("/login");
-        })
+        });
     }
 }
